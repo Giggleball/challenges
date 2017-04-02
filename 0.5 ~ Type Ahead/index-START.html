@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Type Ahead 👀</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <form class="search-form">
+    <input type="text" class="search" placeholder="City or State">
+    <ul class="suggestions">
+      <li>Filter for a city</li>
+      <li>or a state</li>
+    </ul>
+  </form>
+
+<script>
+
+const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+
+// Fetch data
+const cities = []
+
+// New API which'll return a promise (it doesn't know what data it is returning)
+fetch( endpoint )
+  // You have to convert the blob into the correct method
+  .then( blob => blob.json())
+  // Will give you the raw data { json file } 
+  // You have to spread into the push method ... otherwise the data will be nested
+  .then( data => cities.push(...data))
+
+// Filter array to match the words with data
+function findMatches( wordToMatch, cities ) {
+  // Will filter on strings which meet either of the conditions
+  return cities.filter( place => {
+    // Did the city or state match the search ? Use a variable in a reg expression because input will change
+    // To use a Reg expression, you need to first make one outside where you want to use it
+
+    // g = global, will look through entire string / i = match lower & uppercase
+    const regex = new RegExp( wordToMatch, 'gi' )
+    // Match with city or state
+    return place.city.match( regex ) || place.state.match( regex )
+  })
+}
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
+
+// Will change display when input is changed
+function displayMatches() {
+  const matchArray = findMatches( this.value, cities )
+  const html = matchArray.map( place => {
+    // Highlight the search results by replacing the search string with the regex hl
+    const regex = new RegExp( this.value, 'gi' )
+    const cityName = place.city.replace( regex, `<span class = 'hl'>${ this.value }</span>`)
+    const stateName = place.state.replace( regex, `<span class = 'hl'>${ this.value }</span>`)
+    return `
+      <li>
+        <span class = 'name'>${ cityName }, ${ stateName }</span>
+        <span class = 'population'>${ numberWithCommas( place.population ) }</span>
+      </li>
+      `
+  // Use join to create 1 bing string, because map will return it as an array 
+  }).join('')
+  suggestions.innerHTML = html
+}
+
+const searchInput = document.querySelector('.search')
+const suggestions = document.querySelector('.suggestions')
+
+searchInput.addEventListener( 'change', displayMatches )
+searchInput.addEventListener( 'keyup', displayMatches )
+
+</script>
+
+</body>
+
+</html>
