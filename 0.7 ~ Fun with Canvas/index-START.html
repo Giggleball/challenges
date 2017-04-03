@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 Canvas</title>
+</head>
+<body>
+<canvas id="draw" width="800" height="800"></canvas>
+<script>
+
+const canvas = document.querySelector('#draw')
+
+// You draw on the 2D context, so grab it first
+const ctx = canvas.getContext( '2d' )
+
+// Resize canvas size to browser width
+canvas.width = window.innerWidth
+canvas.height = window.innerHeight
+
+// Stroke options
+ctx.strokeStyle = '#BADA55'
+ctx.lineJoin = 'round'
+ctx.lineCap = 'round'
+ctx.lineWidth = 13
+
+// If you use PhotoShop blend modes, you can use them inside of context
+//ctx.globalCompositeOperation = 'multiply'
+
+// Only draws when cursor is active
+let isDrawing = false
+// Where do you start & end
+let lastX = 0
+let lastY = 0
+let hue = 0
+// Will be building up (from thin to thick)
+let direction = true
+
+// Called when mouse is on top of the canvas
+function draw( e ) {
+	if( !isDrawing ) return // Function only runs if mouse down is active
+	console.log( e )
+
+	// hsl, with hue as a variable 100 = saturation, 50 = lightness 
+	ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`
+
+	// Start a begin path to draw
+	ctx.beginPath()
+	ctx.moveTo( lastX, lastY )
+	ctx.lineTo( e.offsetX, e.offsetY )
+
+	// Displays the strokes
+	ctx.stroke()
+
+	// Does not work for me!
+	// [ lastX, lastY ] = [ e.offsetX, e.offsetY ]
+
+	// To continue drawing where you left off 
+	lastX = e.offsetX
+	lastY = e.offsetY
+
+	// Will increment the drawing creating a rainbow effect
+	hue++
+
+	// To reset the hue
+	if( hue >= 350 ){
+		hue = 0
+	}
+
+	// Will increment the linewidth with every loop
+	if( ctx.lineWidth >= 100 || ctx.lineWidth <=1 ) {
+		// Flip direction
+		direction = !direction
+	}
+	if( direction ) {
+		ctx.lineWidth++
+	} else {
+		ctx.lineWidth--
+	}
+}
+
+canvas.addEventListener( 'mousedown', ( e ) => {
+	isDrawing = true 
+	// Update the location of the mouse
+	lastX = e.offsetX
+	lastY = e.offsetY 
+})
+
+canvas.addEventListener( 'mousemove', draw )
+canvas.addEventListener( 'mouseup', () => isDrawing = false )
+// If you leave the screen with the mouse still pressed down, it will stop drawing
+canvas.addEventListener( 'mouseout', () => isDrawing = false )
+
+</script>
+
+
+<style>
+  html, body {
+    margin:0;
+  }
+</style>
+
+</body>
+</html>
