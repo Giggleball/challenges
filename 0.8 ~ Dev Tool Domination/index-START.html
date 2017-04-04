@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Console Tricks!</title>
+</head>
+<body>
+
+<!-- To find out where the JS is which causes an element to change -->
+<!-- Inspect element -> break on attribute modifications -> shows you the line of code responsible -->
+  <p onClick="makeGreen()">×BREAK×DOWN×</p>
+
+  <script>
+    const dogs = [{ name: 'Snickers', age: 2 }, { name: 'hugo', age: 8 }];
+
+    function makeGreen() {
+      const p = document.querySelector('p');
+      p.style.color = '#BADA55';
+      p.style.fontSize = '50px';
+    }
+
+    // Regular
+    console.log( 'hello' )
+
+    // Interpolated
+    console.log( 'hello, I am a %s string!', 'BOO!' ) 
+    // console.log( `hello, I am ${var}` )    // ES6 style
+
+    // Styled { %c }
+    console.log( '%c I am some big text', 'font-size: 50px; background: blue;' ) 
+
+
+    // warning! { ! }
+    console.warn( 'OH NOESSS!') 
+
+    // Error :| { x }
+    console.error( 'Scheiße!!')
+
+    // Info { i }
+    console.info( 'Anime is the dopes thing on earth' )
+
+    // Testing { will only fire when it's wrong / false }
+    const p = document.querySelector( 'p' )
+
+    console.assert( p.classList.contains( 'ouch' ), 'That is wrong!' )
+
+    console.assert( 8 === 8, 'that is incorrect!' ) // will not fire
+
+    // clearing
+    // console.clear()
+
+    // Viewing DOM Elements
+    console.log( p ) // element
+    console.dir( p ) // Shows drop down with all available (open prototype) => methods & all properties that live on that element
+
+    // Grouping together
+    dogs.forEach( dog => {
+      console.groupCollapsed(`${dog.name}`) // group them to open and close them in the console
+      console.log( `This is a ${dog.name}` )
+      console.log( `${dog.name} is ${dog.age} years old` )
+      console.log( `${dog.name} is ${dog.age * 7} dog years old` )
+      console.groupEnd(`${dog.name}`)
+    })
+
+    // counting { counts in realtime }
+    console.count( 'Giggleball' )
+
+    // timing { how long it takes to do something }
+    console.time( 'fetching data' )
+    fetch('https://api.github.com/users/giggleball')
+      .then( data => data.json())
+      .then( data => {
+        console.timeEnd( 'fetching data' )
+        console.log( data )
+      })
+
+    
+
+  </script>
+</body>
+</html>
