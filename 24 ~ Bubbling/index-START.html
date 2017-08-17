@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Understanding JavaScript's Capture</title>
+</head>
+<body class="bod">
+
+  <div class="one">
+    <div class="two">
+      <div class="three">
+      </div>
+    </div>
+  </div>
+
+<style>
+  html {
+    box-sizing: border-box;
+  }
+  *, *:before, *:after { box-sizing: inherit; }
+
+  div {
+    width:100%;
+    padding:100px;
+  }
+
+  .one {
+    background: thistle;
+  }
+
+  .two {
+    background:mistyrose;
+  }
+
+  .three {
+    background:coral;
+  }
+</style>
+
+<button></button>
+<script>
+
+  // Bubbling, the browser will figures out what you clicked on, and trigger more clicks => the ripple effect
+
+  // Capture, when you click on something, it's going to ripple down => top - down
+
+  // Stop Propagation, will stop bubbling => only shows one result
+
+  // Once it will listen to a click once and then unbind itself => will never run again
+
+  const divs = document.querySelectorAll('div')
+
+  function logText(e) {
+      console.log(this.classList.value)
+  //  e.stopPropagation()
+  }
+
+  // when clicked log it
+  divs.forEach(div => div.addEventListener('click', logText, {
+      capture: false,
+      once: true
+  }))
+
+</script>
+</body>
+</html>
